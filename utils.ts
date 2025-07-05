@@ -22,7 +22,6 @@ export function getAccessToServer(ns: NS, target: string): boolean {
     const availbleScripts = portScripts.filter(script => ns.fileExists(script.executable))
 
     if (ns.getServerNumPortsRequired(target) > availbleScripts.length) {
-        ns.printf("Server %s sucks", target);
         return false;
     }
     if (!ns.hasRootAccess(target)) {
