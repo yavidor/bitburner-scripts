@@ -1,4 +1,4 @@
-import type { NS } from "../../NetscriptDefinitions.d.ts"
+import type { NS } from "@ns"
 type Direction = "U" | "D" | "R" | "L"
 function BFS(ns: NS, maze: number[][], x: number, y: number, visited: number[][]): Direction[] {
     const options: { dy: number, dx: number, direction: Direction }[] = [
@@ -32,15 +32,9 @@ function BFS(ns: NS, maze: number[][], x: number, y: number, visited: number[][]
             qx += dx
             ns.print(`qy:${qy}\nqx:${qx}\ndirection:${direction}`)
             if (qy >= 0 && qy < maze.length && qx >= 0 && qx < maze[0].length && maze[qy][qx] == 0 && visited[qy][qx] == 0) {
-                try {
-                    ns.print("HELLO")
-                    visited[qy][qx] = 1
-                    enrichedMaze[qy][qx] = [...enrichedMaze[qy - dy][qx - dx], direction]
-                    queue.unshift([qy, qx, enrichedMaze[qy][qx]])
-                }
-                catch (e) {
-                    ns.print(e, qy, qx)
-                }
+                visited[qy][qx] = 1
+                enrichedMaze[qy][qx] = [...enrichedMaze[qy - dy][qx - dx], direction]
+                queue.unshift([qy, qx, enrichedMaze[qy][qx]])
             }
             qy -= dy
             qx -= dx

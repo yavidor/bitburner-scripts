@@ -1,32 +1,14 @@
-import type { NS } from "../NetscriptDefinitions.d.ts"
-type accessScript = { executable: string, func: (host: string) => boolean }
-function getAccessToServer(target: string, scripts: accessScript[]) {
-    for (const script of scripts) {
-        script.func(target);
-    }
-}
+import type { NS } from "@ns"
+import { getAccessToServer, getHosts } from "./utils";
+
 export async function main(ns: NS) {
     const scriptName = "nuke-available.ts"
-    const targets = ns.scan();
+    const targets = getHosts(ns);
     ns.print(targets.length);
-    const portScripts: accessScript[] = [{ executable: "BruteSSH.exe", func: ns.brutessh }, { executable: "FTPCrack.exe", func: ns.ftpcrack }, { executable: "relaySMTP.exe", func: ns.relaysmtp }, { executable: "HTTPWorm.exe", func: ns.httpworm }, { executable: "SQLInject.exe", func: ns.sqlinject }
-    ]
-    const availbleScripts = portScripts.filter(script => ns.fileExists(script.executable))
-
-    for (let i = 0; i < targets.length; i++) {
-        const target = targets[i];
-        if (ns.getServerNumPortsRequired(target) > availbleScripts.length) {
-            ns.printf("Server %s sucks", target);
-            targets.splice(targets.indexOf(target), 1)
-            i--;
-        } else {
-            if (!ns.hasRootAccess(target)) {
-                getAccessToServer(target, availbleScripts)
-                ns.nuke(target)
-            }
-        }
-    }
     for (const target of targets) {
+        if (!getAccessToServer(ns, target)) {
+            continue
+        }
         if (!ns.fileExists(scriptName, target)) {
             ns.scp(scriptName, target);
         }
