@@ -33,3 +33,17 @@ export function getAccessToServer(ns: NS, target: string): boolean {
     return true
 }
 
+export function getBestTarget(ns: NS): string {
+    let maxWeight = 0;
+    let bestTarget = "joesguns"
+    for (const target of getHosts(ns)) {
+        if (ns.getServerRequiredHackingLevel(target) / 2 > ns.getHackingLevel()) {
+            const currWeight = ns.getServerMinSecurityLevel(target) / ns.getServerMaxMoney(target)
+            if (currWeight > maxWeight) {
+                maxWeight = currWeight;
+                bestTarget = target;
+            }
+        }
+    }
+    return bestTarget;
+}

@@ -1,8 +1,8 @@
 import type { NS } from "@ns"
 async function hackTarget(ns: NS, target: string): Promise<number> {
-    if (ns.hackAnalyzeChance(target) < 0.5) {
-        return 0
-    }
+    // if (ns.hackAnalyzeChance(target) < 0.5) {
+    //     return 0
+    // }
     if (ns.getServerMinSecurityLevel(target) < ns.getServerSecurityLevel(target)) {
         await ns.weaken(target);
         return 0;
