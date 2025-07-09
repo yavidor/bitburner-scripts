@@ -1,23 +1,14 @@
 import type { NS } from "@ns"
-import { getAccessToServer, getBestTarget, getHosts } from "./utils";
+import { getBestTarget, getHosts } from "./utils";
 
 export async function main(ns: NS) {
     const scriptName = "nuke-available.js"
     const hosts = getHosts(ns);
-    ns.print(hosts.length);
-    for (let i = 0; i < hosts.length; i++) {
-        const target = hosts[i]
-        if (!getAccessToServer(ns, target)) {
-            hosts.splice(hosts.indexOf(target), 1)
-            i--
-        }
-    }
-    ns.print(hosts.length);
     const target = getBestTarget(ns);
     for (const host of hosts) {
-        if (!ns.fileExists(scriptName, host)) {
-            ns.scp(scriptName, host);
-        }
+        // if (!ns.fileExists(scriptName, host)) {
+        ns.scp(scriptName, host);
+        // }
         const runInfo = ns.getRunningScript(scriptName, host, ...hosts)
         if (runInfo != null) {
             ns.print(`Script is already running at ${host}`);

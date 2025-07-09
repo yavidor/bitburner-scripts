@@ -7,16 +7,17 @@ export function getHosts(ns: NS): string[] {
     while (queue.length > 0) {
         const host = queue.shift() ?? "";
         hosts.add(host)
-        for (const neighbors of ns.scan(host)) {
-            if (!hosts.has(neighbors)) {
-                queue.unshift(neighbors)
+        for (const neighbor of ns.scan(host)) {
+            if (!hosts.has(neighbor) && getAccessToServer(ns, neighbor)) {
+                queue.unshift(neighbor)
             }
         }
     }
     hosts.delete("home")
     return [...hosts]
 }
-export function getAccessToServer(ns: NS, target: string): boolean {
+
+function getAccessToServer(ns: NS, target: string): boolean {
     const portScripts: accessScript[] = [{ executable: "BruteSSH.exe", func: ns.brutessh }, { executable: "FTPCrack.exe", func: ns.ftpcrack }, { executable: "relaySMTP.exe", func: ns.relaysmtp }, { executable: "HTTPWorm.exe", func: ns.httpworm }, { executable: "SQLInject.exe", func: ns.sqlinject }
     ]
     const availbleScripts = portScripts.filter(script => ns.fileExists(script.executable))
@@ -33,13 +34,15 @@ export function getAccessToServer(ns: NS, target: string): boolean {
     return true
 }
 
+
 export function getBestTarget(ns: NS): string {
     let maxWeight = 0;
     let bestTarget = "joesguns"
     for (const target of getHosts(ns)) {
-        if (ns.getServerRequiredHackingLevel(target) / 2 > ns.getHackingLevel()) {
-            const currWeight = ns.getServerMinSecurityLevel(target) / ns.getServerMaxMoney(target)
-            if (currWeight > maxWeight) {
+        if (ns.getServerRequiredHackingLevel(target) < ns.getHackingLevel() / 2) {
+            const currWeight = ns.getServerMaxMoney(target) / ns.getServerMinSecurityLevel(target);
+            ns.tprint(`${target} -> ${currWeight}`)
+            if (currWeight > maxWeight && ns.getServerMaxMoney(target) != 0) {
                 maxWeight = currWeight;
                 bestTarget = target;
             }

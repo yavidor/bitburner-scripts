@@ -18,9 +18,11 @@ async function hackTarget(ns: NS, target: string): Promise<number> {
 
 export async function main(ns: NS) {
     const targets = ns.args
-    for (const target of targets) {
-        if (typeof target == "string") {
-            await hackTarget(ns, target);
+    while (true) {
+        for (const target of targets) {
+            if (typeof target == "string") {
+                await hackTarget(ns, target);
+            }
         }
     }
 }
