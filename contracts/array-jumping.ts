@@ -12,6 +12,6 @@ function canJump(ns: NS, arr: number[], pos: number): boolean {
     return false;
 }
 export async function main(ns: NS) {
-    const arr = [1, 0, 7, 0, 6, 7, 0, 0, 10, 0, 9, 7, 4, 7, 0, 1, 8, 0, 9, 10];
+    const arr = [...(ns.args[0] as string).split(',').map(x => parseInt(x))];
     ns.tprint(canJump(ns, arr, arr.length - 1) ? 1 : 0)
 }
