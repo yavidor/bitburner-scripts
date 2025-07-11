@@ -1,7 +1,6 @@
 import { NS } from "@ns"
 function getMaxThreads(ns: NS, host: string, cost: number): number {
-
-    return Math.max(Math.floor(Math.floor(ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / cost), 1)
+    return Math.max(Math.floor(Math.floor(ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / Math.ceil(cost)), 1)
 }
 export async function main(ns: NS) {
     const action = ns.args[0];

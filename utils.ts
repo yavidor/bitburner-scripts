@@ -3,7 +3,7 @@ type accessScript = { executable: string, func: (host: string) => boolean }
 
 export function getHosts(ns: NS): string[] {
     const hosts: Set<string> = new Set();
-    const queue = ns.scan();
+    const queue = ["home"];
     while (queue.length > 0) {
         const host = queue.shift() ?? "";
         hosts.add(host)
@@ -43,7 +43,6 @@ export function getBestTarget(ns: NS): string {
     for (const target of targets) {
         if (ns.getServerRequiredHackingLevel(target) < ns.getHackingLevel() / 2) {
             const currWeight = ns.getServerMaxMoney(target) / ns.getServerMinSecurityLevel(target);
-            ns.tprint(`${target} -> ${currWeight}`)
             if (currWeight > maxWeight && ns.getServerMaxMoney(target) != 0) {
                 maxWeight = currWeight;
                 bestTarget = target;
