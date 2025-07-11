@@ -2,8 +2,7 @@ import type { NS } from "@ns"
 import { getBestTarget, getHosts } from "./utils";
 
 export async function main(ns: NS) {
-    // const scriptName = "nuke-available.js"
-    const scriptName = "";
+    const scriptName = "nuke-available.js"
     const hosts = getHosts(ns);
     const target = getBestTarget(ns);
     for (const host of hosts) {

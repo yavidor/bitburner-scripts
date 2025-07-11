@@ -1,17 +1,25 @@
 import type { NS } from "@ns"
-type BuyPropertyFunc = (arg1: number, arg2?: number) => boolean
+type BuyPropertyFunc = (index: number, levels?: number) => boolean
 type Property = { property: string, value: number, maxValue: number, buyPropertyFunc: BuyPropertyFunc, getUpgradeCostFunc: GetUpgradeCostFunc }
-type GetUpgradeCostFunc = (arg1: number, arg2?: number) => number
-function upgradeProperty(property: Property, playerMoney: number, nodeNum: number): boolean {
+type GetUpgradeCostFunc = (index: number, levels?: number) => number
+type Upgrade = { nodeNum: number, property: Property, price: number, levels: number };
+function calculateProperty(property: Property, playerMoney: number, nodeNum: number): Pick<Upgrade, 'price' | 'levels'> {
 
     if (property.value < property.maxValue && playerMoney > property.getUpgradeCostFunc(nodeNum)) {
         let levels = 1;
         while (playerMoney > property.getUpgradeCostFunc(nodeNum, levels)) {
             levels++;
         }
-        return property.buyPropertyFunc(nodeNum, levels - 1);
+        // return property.buyPropertyFunc(nodeNum, levels - 1);
+        return ({
+            price: property.getUpgradeCostFunc(nodeNum, levels - 1),
+            levels: levels - 1
+        })
     }
-    return false
+    return {
+        price: Infinity,
+        levels: 0
+    }
 }
 export async function main(ns: NS) {
     let counter = 0;
@@ -25,6 +33,7 @@ export async function main(ns: NS) {
             const nodeNum = ns.hacknet.purchaseNode()
             ns.tprint(`Bought node #${nodeNum}`)
         }
+        const upgrades: Upgrade[] = [];
         for (let i = 0; i < ns.hacknet.numNodes(); i++) {
             const node = ns.hacknet.getNodeStats(i);
             const properties: Property[] = [
@@ -34,11 +43,14 @@ export async function main(ns: NS) {
             ]
             for (const property of properties) {
                 const playerMoney = ns.getPlayer().money;
-                const res = upgradeProperty(property, playerMoney, i)
-                if (res) {
-                    ns.tprint(`Upgraded ${property.property} in node #${i} to ${property.value + 1}`)
-                }
+                upgrades.push({ nodeNum: i, property, ...calculateProperty(property, playerMoney, i) })
             }
+        }
+        const chosenUpgrade = upgrades.sort((a, b) => b.levels - a.levels)[0];
+        const res = chosenUpgrade.property.buyPropertyFunc(chosenUpgrade.nodeNum, chosenUpgrade.levels)
+
+        if (res) {
+            ns.tprint(`Upgraded ${chosenUpgrade.property.property} in node #${chosenUpgrade.nodeNum} #${chosenUpgrade.levels} levels to ${chosenUpgrade.property.value + chosenUpgrade.levels}`)
         }
         ns.tprint(`Finished loop #${counter}`)
     }

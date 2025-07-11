@@ -1,9 +1,9 @@
 import type { NS } from "@ns"
 async function hackTarget(ns: NS, target: string): Promise<number> {
-    // if (ns.hackAnalyzeChance(target) < 0.5) {
-    //     return 0
-    // }
-    if (ns.getServerMinSecurityLevel(target) < ns.getServerSecurityLevel(target)) {
+    if (ns.hackAnalyzeChance(target) < 0.5) {
+        return 0
+    }
+    if (ns.getServerMinSecurityLevel(target) < ns.getServerSecurityLevel(target) * 0.9) {
         await ns.weaken(target);
         return 0;
     }
@@ -22,6 +22,8 @@ export async function main(ns: NS) {
         for (const target of targets) {
             if (typeof target == "string") {
                 await hackTarget(ns, target);
+            } else {
+                ns.exit()
             }
         }
     }
