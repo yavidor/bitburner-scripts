@@ -2,9 +2,10 @@ import type { NS } from "@ns"
 import { getHosts } from "./utils";
 const calculateAvailableRAM = (ns: NS, host: string, scriptName: string) => Math.floor((ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / Math.max(1, ns.getScriptRam(scriptName, host)));
 
-function runAction(ns: NS, host: string, scriptName: string, action: "hack" | "weaken" | "grow", target: string) {
+async function runAction(ns: NS, host: string, scriptName: string, action: "hack" | "weaken" | "grow", target: string) {
     const availableRam = calculateAvailableRAM(ns, host, scriptName)
     ns.scp(scriptName, host);
+    await ns.sleep(1);
     ns.print(`host: ${host} has ${availableRam}`)
     if (availableRam > 0) {
         ns.exec(scriptName, host, availableRam, action, target);
@@ -21,21 +22,21 @@ export async function main(ns: NS) {
     ns.disableLog("getServerMinSecurityLevel")
     while (ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target)) {
         for (const host of hosts) {
-            runAction(ns, host, scriptName, "weaken", target)
+            await runAction(ns, host, scriptName, "weaken", target)
         }
         await ns.sleep(ns.getWeakenTime(target))
     }
+
     while (ns.getServerMoneyAvailable(target) < ns.getServerMaxMoney(target)) {
-        for (const host of hosts) {
-            ns.tprint(host)
-            runAction(ns, host, scriptName, "grow", target)
+        for (let i = 0; i < 2; i++) {
+            for (const host of hosts) {
+                await runAction(ns, host, scriptName, "grow", target)
+            }
+            await ns.sleep(ns.getGrowTime(target) + 5000)
         }
-        await ns.sleep(ns.getGrowTime(target) + 5000)
-
 
         for (const host of hosts) {
-            ns.print(host)
-            runAction(ns, host, scriptName, "weaken", target)
+            await runAction(ns, host, scriptName, "weaken", target)
 
         }
         await ns.sleep(ns.getWeakenTime(target) + 5000)
