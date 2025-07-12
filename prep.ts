@@ -4,9 +4,8 @@ const calculateAvailableRAM = (ns: NS, host: string, scriptName: string) => Math
 
 function runAction(ns: NS, host: string, scriptName: string, action: "hack" | "weaken" | "grow", target: string) {
     const availableRam = calculateAvailableRAM(ns, host, scriptName)
-    if (!ns.fileExists(scriptName, host)) {
-        ns.scp(scriptName, host);
-    }
+    ns.scp(scriptName, host);
+    ns.print(`host: ${host} has ${availableRam}`)
     if (availableRam > 0) {
         ns.exec(scriptName, host, availableRam, action, target);
     }
@@ -14,10 +13,12 @@ function runAction(ns: NS, host: string, scriptName: string, action: "hack" | "w
 export async function main(ns: NS) {
     const start = Date.now();
     const target = ns.args[0] as string;
-    const hosts = ["home", ...getHosts(ns)];
+    const hosts = ["home", ...getHosts(ns), ...ns.getPurchasedServers()];
     const scriptName = "HWG.js"
     ns.disableLog("getServerMaxRam")
-    ns.disableLog("getUsedMaxRam")
+    ns.disableLog("getServerUsedRam")
+    ns.disableLog("exec")
+    ns.disableLog("getServerMinSecurityLevel")
     while (ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target)) {
         for (const host of hosts) {
             runAction(ns, host, scriptName, "weaken", target)
@@ -26,19 +27,20 @@ export async function main(ns: NS) {
     }
     while (ns.getServerMoneyAvailable(target) < ns.getServerMaxMoney(target)) {
         for (const host of hosts) {
+            ns.tprint(host)
             runAction(ns, host, scriptName, "grow", target)
         }
-        ns.tprint("&")
-        await ns.sleep(ns.getGrowTime(target))
-        ns.tprint("Hello??")
+        await ns.sleep(ns.getGrowTime(target) + 5000)
 
 
         for (const host of hosts) {
+            ns.print(host)
             runAction(ns, host, scriptName, "weaken", target)
+
         }
-        await ns.sleep(ns.getWeakenTime(target))
+        await ns.sleep(ns.getWeakenTime(target) + 5000)
 
     }
     const end = Date.now();
-    ns.tprint(`Prepping ${target} took ${(end - start) * 1000 * 60} minutes`)
+    ns.print(`Prepping ${target} took ${(end - start) * 1000 * 60} minutes`)
 }

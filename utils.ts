@@ -16,6 +16,7 @@ export function getHosts(ns: NS): string[] {
     hosts.delete("home")
     return [...hosts]
 }
+
 export function getRouteToHost(ns: NS, host: string, target: string, path: string[] = ["home"]): string[] {
     if (host === target) {
         return path;
