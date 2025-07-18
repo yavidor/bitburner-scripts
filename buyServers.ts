@@ -1,9 +1,13 @@
 import { NS } from "@ns"
 
 export async function main(ns: NS) {
-    const money = ns.getPlayer().money;
-    while (money > 440_000) {
-        ns.purchaseServer("pserv-", 64)
-        await ns.sleep(10 * 1000);
+    const ram = ns.args.length > 0 ? ns.args[0] as number : 64;
+    ns.print(`A server with ${ram}GB ram costs ${ns.formatNumber(ns.getPurchasedServerCost(ram))}$`);
+    let counter = 0;
+    while (ns.getPlayer().money > ns.getPurchasedServerCost(ram) && ns.getPurchasedServers().length < ns.getPurchasedServerLimit()) {
+        counter++;
+        ns.purchaseServer(`pserv-${ns.getPurchasedServers().length}`, ram)
+        await ns.sleep(100);
     }
+    ns.print(`Bought ${counter} nodes`)
 }
