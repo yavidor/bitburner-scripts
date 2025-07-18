@@ -14,18 +14,12 @@ async function runAction(
     const fileExists = ns.fileExists(scriptName, host);
     ns.scp(scriptName, host);
     if (!fileExists) {
-        await ns.sleep(1000);
+        await ns.sleep(5000);
     }
     ns.print(`host: ${host} has ${availableRam}`);
     if (availableRam > 0) {
         //If running on home keep half the ram available for other uses
-        ns.exec(
-            scriptName,
-            host,
-            host === "home" ? availableRam - 20 /*Math.floor(availableRam / 2)*/ : availableRam,
-            action,
-            target,
-        );
+        ns.exec(scriptName, host, host === "home" ? Math.floor(availableRam * 0.9) : availableRam, action, target);
         return availableRam;
     }
     return 0;
@@ -33,6 +27,7 @@ async function runAction(
 export async function main(ns: NS) {
     const start = Date.now();
     const target = ns.args.length > 0 ? (ns.args[0] as string) : getBestTarget(ns);
+    ns.tprint(target);
     const scriptName = "HWG.js";
     ns.disableLog("getServerMaxRam");
     ns.disableLog("getServerUsedRam");
@@ -59,4 +54,6 @@ export async function main(ns: NS) {
     }
     const end = Date.now();
     ns.print(`Prepping ${target} took ${(end - start) / 1000 / 60} minutes`);
+    ns.print("Running batch.js");
+    ns.exec("batch.js", "home", undefined, target);
 }

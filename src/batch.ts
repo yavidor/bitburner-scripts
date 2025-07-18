@@ -15,7 +15,7 @@ function runAction(ns: NS, host: string, scriptName: string, action: "hack" | "w
 }
 export async function main(ns: NS) {
     const hosts = ["home", ...getHosts(ns)];
-    const target = getBestTarget(ns);
+    const target = ns.args.length > 0 ? (ns.args[0] as string) : getBestTarget(ns);
     const scriptName = "HWG.js";
 
     while (true) {
