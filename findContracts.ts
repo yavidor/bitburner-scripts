@@ -6,9 +6,7 @@ export async function main(ns: NS) {
         const contracts = ns.ls(host, ".cct");
         if (contracts.length > 0) {
             for (const contract of contracts) {
-                ns.tprint(
-                    `${contract}: ${getRouteToHost(ns, "home", host).join(" -> ")}`,
-                );
+                ns.tprint(`${contract}: ${getRouteToHost(ns, "home", host).join(" -> ")}`);
             }
         }
     }

@@ -2,18 +2,9 @@ import type { NS } from "@ns";
 import { getBestTarget, getHosts } from "./utils";
 
 const calculateAvailableRAM = (ns: NS, host: string, scriptName: string) =>
-    Math.floor(
-        (ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) /
-            Math.max(1, ns.getScriptRam(scriptName, host)),
-    );
+    Math.floor((ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / Math.max(1, ns.getScriptRam(scriptName, host)));
 
-function runAction(
-    ns: NS,
-    host: string,
-    scriptName: string,
-    action: "hack" | "weaken" | "grow",
-    target: string,
-) {
+function runAction(ns: NS, host: string, scriptName: string, action: "hack" | "weaken" | "grow", target: string) {
     const availableRam = calculateAvailableRAM(ns, host, scriptName);
     if (!ns.fileExists(scriptName, host)) {
         ns.scp(scriptName, host);

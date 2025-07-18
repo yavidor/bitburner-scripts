@@ -19,10 +19,7 @@ function calculateProperty(
     playerMoney: number,
     nodeNum: number,
 ): Pick<Upgrade, "price" | "levels"> {
-    if (
-        property.value < property.maxValue &&
-        playerMoney > property.getUpgradeCostFunc(nodeNum)
-    ) {
+    if (property.value < property.maxValue && playerMoney > property.getUpgradeCostFunc(nodeNum)) {
         let levels = 1;
         while (playerMoney > property.getUpgradeCostFunc(nodeNum, levels)) {
             levels++;
@@ -86,10 +83,7 @@ export async function main(ns: NS) {
             }
         }
         const chosenUpgrade = upgrades.sort((a, b) => b.levels - a.levels)[0];
-        const res = chosenUpgrade.property.buyPropertyFunc(
-            chosenUpgrade.nodeNum,
-            chosenUpgrade.levels,
-        );
+        const res = chosenUpgrade.property.buyPropertyFunc(chosenUpgrade.nodeNum, chosenUpgrade.levels);
 
         if (res) {
             ns.tprint(

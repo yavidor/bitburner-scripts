@@ -1,10 +1,7 @@
 import type { NS } from "@ns";
 import { getBestTarget, getHosts } from "./utils";
 const calculateAvailableRAM = (ns: NS, host: string, scriptName: string) =>
-    Math.floor(
-        (ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) /
-            Math.max(1, ns.getScriptRam(scriptName, host)),
-    );
+    Math.floor((ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / Math.max(1, ns.getScriptRam(scriptName, host)));
 
 async function runAction(
     ns: NS,
@@ -25,9 +22,7 @@ async function runAction(
         ns.exec(
             scriptName,
             host,
-            host === "home"
-                ? availableRam - 20 /*Math.floor(availableRam / 2)*/
-                : availableRam,
+            host === "home" ? availableRam - 20 /*Math.floor(availableRam / 2)*/ : availableRam,
             action,
             target,
         );
@@ -37,16 +32,13 @@ async function runAction(
 }
 export async function main(ns: NS) {
     const start = Date.now();
-    const target =
-        ns.args.length > 0 ? (ns.args[0] as string) : getBestTarget(ns);
+    const target = ns.args.length > 0 ? (ns.args[0] as string) : getBestTarget(ns);
     const scriptName = "HWG.js";
     ns.disableLog("getServerMaxRam");
     ns.disableLog("getServerUsedRam");
     ns.disableLog("exec");
     ns.disableLog("getServerMinSecurityLevel");
-    while (
-        ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target)
-    ) {
+    while (ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target)) {
         const hosts = ["home", ...getHosts(ns), ...ns.getPurchasedServers()];
         for (const host of hosts) {
             await runAction(ns, host, scriptName, "weaken", target);

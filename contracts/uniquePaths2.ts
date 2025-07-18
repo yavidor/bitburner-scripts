@@ -1,12 +1,6 @@
 import type { NS } from "@ns";
 
-function DFS(
-    ns: NS,
-    y: number,
-    x: number,
-    maze: number[][],
-    ways: number = 0,
-): number {
+function DFS(ns: NS, y: number, x: number, maze: number[][], ways: number = 0): number {
     ns.tprint(`\nx: ${x}\ny: ${y}`);
     const rows = maze.length;
     const columns = maze[0].length;

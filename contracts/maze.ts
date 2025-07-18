@@ -1,12 +1,6 @@
 import type { NS } from "@ns";
 type Direction = "U" | "D" | "R" | "L";
-function BFS(
-    ns: NS,
-    maze: number[][],
-    x: number,
-    y: number,
-    visited: number[][],
-): Direction[] {
+function BFS(ns: NS, maze: number[][], x: number, y: number, visited: number[][]): Direction[] {
     const options: { dy: number; dx: number; direction: Direction }[] = [
         { dy: -1, dx: 0, direction: "U" },
         { dy: 1, dx: 0, direction: "D" },
@@ -46,10 +40,7 @@ function BFS(
                 visited[qy][qx] == 0
             ) {
                 visited[qy][qx] = 1;
-                enrichedMaze[qy][qx] = [
-                    ...enrichedMaze[qy - dy][qx - dx],
-                    direction,
-                ];
+                enrichedMaze[qy][qx] = [...enrichedMaze[qy - dy][qx - dx], direction];
                 queue.unshift([qy, qx, enrichedMaze[qy][qx]]);
             }
             qy -= dy;
@@ -63,11 +54,7 @@ function BFS(
     }
     ns.print(counter);
     for (let i = 0; i < maze.length; i++) {
-        ns.print(
-            enrichedMaze[i]
-                .reduce((acc, cur) => `${acc},${cur.length}`, "")
-                .slice(1),
-        );
+        ns.print(enrichedMaze[i].reduce((acc, cur) => `${acc},${cur.length}`, "").slice(1));
     }
     return enrichedMaze[maze.length - 1][maze[0].length - 1];
 }

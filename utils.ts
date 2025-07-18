@@ -17,12 +17,7 @@ export function getHosts(ns: NS): string[] {
     return [...hosts];
 }
 
-export function getRouteToHost(
-    ns: NS,
-    host: string,
-    target: string,
-    path: string[] = ["home"],
-): string[] {
+export function getRouteToHost(ns: NS, host: string, target: string, path: string[] = ["home"]): string[] {
     if (host === target) {
         return path;
     }
@@ -31,10 +26,7 @@ export function getRouteToHost(
         if (neighbor == host || path.includes(neighbor)) {
             continue;
         }
-        const attemptedPath = getRouteToHost(ns, neighbor, target, [
-            ...path,
-            neighbor,
-        ]);
+        const attemptedPath = getRouteToHost(ns, neighbor, target, [...path, neighbor]);
         if (attemptedPath.length > 0) {
             return attemptedPath;
         }
@@ -49,9 +41,7 @@ function getAccessToServer(ns: NS, target: string): boolean {
         { executable: "HTTPWorm.exe", func: ns.httpworm },
         { executable: "SQLInject.exe", func: ns.sqlinject },
     ];
-    const availableScripts = portScripts.filter((script) =>
-        ns.fileExists(script.executable),
-    );
+    const availableScripts = portScripts.filter((script) => ns.fileExists(script.executable));
     // ns.tprint(`target: ${target}\nhasRoot: ${ns.hasRootAccess(target)}\nports: ${ns.getServerNumPortsRequired(target)}`)
     if (ns.getServerNumPortsRequired(target) > availableScripts.length) {
         return false;
@@ -66,13 +56,7 @@ function getAccessToServer(ns: NS, target: string): boolean {
 }
 
 export function getMaxThreads(ns: NS, host: string, cost: number): number {
-    return Math.max(
-        Math.floor(
-            Math.floor(ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) /
-                Math.ceil(cost),
-        ),
-        1,
-    );
+    return Math.max(Math.floor(Math.floor(ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / Math.ceil(cost)), 1);
 }
 
 export function getBestTarget(ns: NS): string {
@@ -80,13 +64,8 @@ export function getBestTarget(ns: NS): string {
     let bestTarget = "n00dles";
     const targets = getHosts(ns);
     for (const target of targets) {
-        if (
-            ns.getServerRequiredHackingLevel(target) <
-            ns.getHackingLevel() / 2
-        ) {
-            const currWeight =
-                ns.getServerMaxMoney(target) /
-                ns.getServerMinSecurityLevel(target);
+        if (ns.getServerRequiredHackingLevel(target) < ns.getHackingLevel() / 2) {
+            const currWeight = ns.getServerMaxMoney(target) / ns.getServerMinSecurityLevel(target);
             if (currWeight > maxWeight && ns.getServerMaxMoney(target) != 0) {
                 maxWeight = currWeight;
                 bestTarget = target;
