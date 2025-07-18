@@ -11,7 +11,7 @@ async function runAction(ns: NS, host: string, scriptName: string, action: "hack
     }
     ns.print(`host: ${host} has ${availableRam}`)
     if (availableRam > 0) {
-        ns.tprint(`${host}: ${ns.exec(scriptName, host, availableRam, action, target)}`)
+        ns.exec(scriptName, host, availableRam, action, target);
         return availableRam;
     }
     return 0;
@@ -52,5 +52,5 @@ export async function main(ns: NS) {
 
     }
     const end = Date.now();
-    ns.print(`Prepping ${target} took ${(end - start) * 1000 * 60} minutes`)
+    ns.print(`Prepping ${target} took ${(end - start) / 1000 / 60} minutes`)
 }
