@@ -1,5 +1,5 @@
 import type { NS } from "@ns"
-import { getHosts } from "./utils";
+import { getBestTarget, getHosts } from "./utils";
 const calculateAvailableRAM = (ns: NS, host: string, scriptName: string) => Math.floor((ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / Math.max(1, ns.getScriptRam(scriptName, host)));
 
 async function runAction(ns: NS, host: string, scriptName: string, action: "hack" | "weaken" | "grow", target: string) {
@@ -13,7 +13,7 @@ async function runAction(ns: NS, host: string, scriptName: string, action: "hack
 }
 export async function main(ns: NS) {
     const start = Date.now();
-    const target = ns.args[0] as string;
+    const target = ns.args.length > 0 ? ns.args[0] as string : getBestTarget(ns);
     const hosts = ["home", ...getHosts(ns), ...ns.getPurchasedServers()];
     const scriptName = "HWG.js"
     ns.disableLog("getServerMaxRam")
@@ -28,7 +28,7 @@ export async function main(ns: NS) {
     }
 
     while (ns.getServerMoneyAvailable(target) < ns.getServerMaxMoney(target)) {
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 3; i++) {
             for (const host of hosts) {
                 await runAction(ns, host, scriptName, "grow", target)
             }

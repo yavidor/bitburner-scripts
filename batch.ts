@@ -23,14 +23,14 @@ export async function main(ns: NS) {
         }
         await ns.sleep(ns.getHackTime(target) + 5000)
 
-        // for (const host of hosts) {
-        // runAction(ns, host, scriptName, "weaken", target);
-        // }
-        // await ns.sleep(ns.getWeakenTime(target) + 5000)
+        for (const host of hosts) {
+            runAction(ns, host, scriptName, "weaken", target);
+        }
+        await ns.sleep(ns.getWeakenTime(target) + 5000)
 
-        // for (const host of hosts) {
-        // runAction(ns, host, scriptName, "grow", target)
-        // }
-        // await ns.sleep(ns.getGrowTime(target) + 5000)
+        for (const host of hosts) {
+            runAction(ns, host, scriptName, "grow", target)
+        }
+        await ns.sleep(ns.getGrowTime(target) + 5000)
     }
 }

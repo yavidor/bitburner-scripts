@@ -17,8 +17,7 @@ function DFS(ns: NS, y: number, x: number, maze: number[][], ways: number = 0): 
 
 export async function main(ns: NS) {
     // const [rows, columns] = (ns.args[0] as string).slice(1, (ns.args[0] as string).length - 1).split(',').map(x => parseInt(x))
-    const maze = [[0, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0]]
+    const maze = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1], [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]]
     ns.tprint(DFS(ns, 0, 0, maze))
 }
 
