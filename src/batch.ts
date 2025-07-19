@@ -10,11 +10,11 @@ function runAction(ns: NS, host: string, scriptName: string, action: "hack" | "w
         ns.scp(scriptName, host);
     }
     if (availableRam > 0) {
-        ns.exec(scriptName, host, availableRam, action, target);
+        ns.exec(scriptName, host, host === "home" ? Math.floor(availableRam * 0.9) : availableRam, action, target);
     }
 }
 export async function main(ns: NS) {
-    const hosts = ["home", ...getHosts(ns)];
+    const hosts = ["home", ...getHosts(ns), ...ns.getPurchasedServers()];
     const target = ns.args.length > 0 ? (ns.args[0] as string) : getBestTarget(ns);
     const scriptName = "HWG.js";
 

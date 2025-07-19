@@ -1,5 +1,20 @@
 import type { NS } from "@ns";
 
+function getMaxSubArray(arr: number[]): number {
+    let maxSum = arr[0];
+    for (let lower = 0; lower < arr.length; lower++) {
+        for (let higher = arr.length - 1; higher >= lower; higher--) {
+            const subArr = [];
+            for (let index = lower; index <= higher; index++) {
+                subArr.push(arr[index]);
+            }
+            const currSum = subArr.reduce((prev, curr) => prev + curr, 0);
+            maxSum = Math.max(maxSum, currSum);
+        }
+    }
+    return maxSum;
+}
+
 export async function main(ns: NS) {
     const arr = ns.args
         .join("")
@@ -7,13 +22,4 @@ export async function main(ns: NS) {
         .map((x) => parseInt(x));
     ns.tprint(arr);
     ns.tprint(getMaxSubArray(arr));
-}
-function getMaxSubArray(arr: number[], start: number = 0, end: number = arr.length - 1, index: number = 0): number {
-    if (index >= end) {
-        return arr[index];
-    }
-    return Math.max(
-        arr[index] + getMaxSubArray(arr, start, end, index + 1),
-        arr[index] + getMaxSubArray(arr, start, end - 1, index + 1),
-    );
 }

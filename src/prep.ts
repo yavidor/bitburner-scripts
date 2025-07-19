@@ -11,11 +11,7 @@ async function runAction(
     target: string,
 ): Promise<number> {
     const availableRam = calculateAvailableRAM(ns, host, scriptName);
-    const fileExists = ns.fileExists(scriptName, host);
     ns.scp(scriptName, host);
-    if (!fileExists) {
-        await ns.sleep(5000);
-    }
     // ns.print(`host: ${host} has ${availableRam}`);
     if (availableRam > 0) {
         //If running on home keep half the ram available for other uses
