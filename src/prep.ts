@@ -42,13 +42,16 @@ export async function main(ns: NS) {
     }
     while (ns.getServerMoneyAvailable(target) < ns.getServerMaxMoney(target)) {
         const hosts = ["home", ...getHosts(ns), ...ns.getPurchasedServers()];
+        let counter = 0;
         for (const host of hosts) {
-            await runAction(ns, host, scriptName, "grow", target);
+            counter += await runAction(ns, host, scriptName, "grow", target);
         }
+        ns.print(`Running "grow" with ${counter} threads`);
         await ns.sleep(ns.getGrowTime(target) + 5000);
 
         for (const host of hosts) {
             await runAction(ns, host, scriptName, "weaken", target);
+            ns.print(`Running "weaken" with ${counter} threads`);
         }
         await ns.sleep(ns.getWeakenTime(target) + 5000);
     }
