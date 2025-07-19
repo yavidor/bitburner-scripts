@@ -18,20 +18,19 @@ export async function main(ns: NS) {
     const target = ns.args.length > 0 ? (ns.args[0] as string) : getBestTarget(ns);
     const scriptName = "HWG.js";
 
-    while (true) {
-        for (const host of hosts) {
-            runAction(ns, host, scriptName, "hack", target);
-        }
-        await ns.sleep(ns.getHackTime(target) + 5000);
-
-        for (const host of hosts) {
-            runAction(ns, host, scriptName, "weaken", target);
-        }
-        await ns.sleep(ns.getWeakenTime(target) + 5000);
-
-        for (const host of hosts) {
-            runAction(ns, host, scriptName, "grow", target);
-        }
-        await ns.sleep(ns.getGrowTime(target) + 5000);
+    for (const host of hosts) {
+        runAction(ns, host, scriptName, "hack", target);
     }
+    await ns.sleep(ns.getHackTime(target) + 5000);
+
+    for (const host of hosts) {
+        runAction(ns, host, scriptName, "weaken", target);
+    }
+    await ns.sleep(ns.getWeakenTime(target) + 5000);
+
+    for (const host of hosts) {
+        runAction(ns, host, scriptName, "grow", target);
+    }
+    await ns.sleep(ns.getGrowTime(target) + 5000);
+    ns.exec("prep.js", "home", undefined, target);
 }
