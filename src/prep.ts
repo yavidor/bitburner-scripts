@@ -16,7 +16,7 @@ async function runAction(
     if (!fileExists) {
         await ns.sleep(5000);
     }
-    ns.print(`host: ${host} has ${availableRam}`);
+    // ns.print(`host: ${host} has ${availableRam}`);
     if (availableRam > 0) {
         //If running on home keep half the ram available for other uses
         ns.exec(scriptName, host, host === "home" ? Math.floor(availableRam * 0.9) : availableRam, action, target);
@@ -26,18 +26,27 @@ async function runAction(
 }
 export async function main(ns: NS) {
     const start = Date.now();
-    const target = ns.args.length > 0 ? (ns.args[0] as string) : getBestTarget(ns);
-    ns.tprint(target);
     const scriptName = "HWG.js";
     ns.disableLog("getServerMaxRam");
     ns.disableLog("getServerUsedRam");
     ns.disableLog("exec");
+    ns.disableLog("scp");
+    ns.disableLog("scan");
     ns.disableLog("getServerMinSecurityLevel");
+    ns.disableLog("getServerNumPortsRequired");
+    ns.disableLog("getServerRequiredHackingLevel");
+    ns.disableLog("getHackingLevel");
+    ns.disableLog("getServerMaxMoney");
+    ns.disableLog("getServerSecurityLevel");
+    const target = ns.args.length > 0 ? (ns.args[0] as string) : getBestTarget(ns);
+    ns.tprint(target);
     while (ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target)) {
         const hosts = ["home", ...getHosts(ns), ...ns.getPurchasedServers()];
+        let counter = 0;
         for (const host of hosts) {
-            await runAction(ns, host, scriptName, "weaken", target);
+            counter += await runAction(ns, host, scriptName, "weaken", target);
         }
+        ns.print(`Running [weaken] with ${counter} threads`);
         await ns.sleep(ns.getWeakenTime(target));
     }
     while (ns.getServerMoneyAvailable(target) < ns.getServerMaxMoney(target)) {
@@ -46,17 +55,17 @@ export async function main(ns: NS) {
         for (const host of hosts) {
             counter += await runAction(ns, host, scriptName, "grow", target);
         }
-        ns.print(`Running "grow" with ${counter} threads`);
+        ns.print(`Running [grow] with ${counter} threads`);
         await ns.sleep(ns.getGrowTime(target) + 5000);
 
+        counter = 0;
         for (const host of hosts) {
-            await runAction(ns, host, scriptName, "weaken", target);
-            ns.print(`Running "weaken" with ${counter} threads`);
+            counter += await runAction(ns, host, scriptName, "weaken", target);
         }
+        ns.print(`Running [weaken] with ${counter} threads`);
         await ns.sleep(ns.getWeakenTime(target) + 5000);
     }
     const end = Date.now();
-    ns.print(`Prepping ${target} took ${(end - start) / 1000 / 60} minutes`);
-    ns.print("Running batch.js");
+    ns.tprint(`Prepping ${target} took ${(end - start) / 1000 / 60} minutes`);
     ns.exec("batch.js", "home", undefined, target);
 }
