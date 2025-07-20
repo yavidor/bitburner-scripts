@@ -9,7 +9,7 @@ export async function main(ns: NS) {
             if (money >= price) {
                 const currRam = ns.getServerMaxRam(server);
                 ns.upgradePurchasedServer(server, 2 ** n);
-                ns.tprint(`Upgraded ${server} from ${currRam}GB to ${2 ** n}GB`);
+                ns.tprint(`Upgraded ${server} from ${ns.formatRam(currRam)} to ${ns.formatRam(2 ** n)}`);
             }
         }
     }
