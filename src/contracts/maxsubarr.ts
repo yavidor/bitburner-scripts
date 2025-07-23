@@ -8,6 +8,7 @@ function getMaxSubArray(arr: number[]): number {
             for (let index = lower; index <= higher; index++) {
                 subArr.push(arr[index]);
             }
+            //Get the sum of the subarray
             const currSum = subArr.reduce((prev, curr) => prev + curr, 0);
             maxSum = Math.max(maxSum, currSum);
         }
