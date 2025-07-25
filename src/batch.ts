@@ -10,7 +10,8 @@ function runAction(ns: NS, host: string, scriptName: string, action: "hack" | "w
         ns.scp(scriptName, host);
     }
     if (availableRam > 0) {
-        ns.exec(scriptName, host, host === "home" ? Math.floor(availableRam * 0.9) : availableRam, action, target);
+        const thirdRam = Math.floor(availableRam / 3);
+        ns.exec(scriptName, host, host === "home" ? Math.floor(thirdRam * 0.9) : thirdRam, action, target);
     }
 }
 export async function main(ns: NS) {
@@ -18,6 +19,11 @@ export async function main(ns: NS) {
     const target = ns.args.length > 0 ? (ns.args[0] as string) : getBestTarget(ns);
     const scriptName = "HWG.js";
 
+    // for (const host of hosts) {
+    //     const weakenTime = ns.getWeakenTime(target);
+    //     const growTime = ns.getGrowTime(target);
+    //     const hackTime = ns.getHackTime(target);
+    // }
     for (const host of hosts) {
         runAction(ns, host, scriptName, "hack", target);
     }
