@@ -18,7 +18,6 @@ function BFS(ns: NS, maze: number[][], x: number, y: number, visited: number[][]
     }
     visited[y][x] = 1;
     while (queue.length > 0 && counter < 1000) {
-        //ns.print(queue)
         let [qy, qx] = queue.shift() ?? [-1, -1];
         if (qy == -1 && qx == -1) {
             return enrichedMaze[0][0];
@@ -61,12 +60,13 @@ function BFS(ns: NS, maze: number[][], x: number, y: number, visited: number[][]
 
 export async function main(ns: NS) {
     const maze = [
-        [0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0],
-        [0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0],
-        [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 1, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 1, 0, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 0],
+        [1, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0],
     ];
 
     const visited: number[][] = [];
@@ -76,7 +76,6 @@ export async function main(ns: NS) {
             visited[i][j] = 0;
         }
     }
-    //const [, stack] = DFS(ns, maze, 0, 0, [], visited);
     const stack = BFS(ns, maze, 0, 0, visited);
-    ns.print(stack.join(""));
+    ns.tprint(stack.join(""));
 }
