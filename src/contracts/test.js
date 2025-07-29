@@ -1,31 +1,46 @@
 function spiralize(matrix) {
     const spiral = [];
-    let xLoops = 1,
-        yLoops = 1,
+    let xUpper = matrix[0].length,
+        yUpper = matrix.length,
+        xLower = -1,
+        yLower = -1,
         x = 0,
-        y = 0,
-        width = matrix[0].length - 1,
-        height = matrix.length - 1;
+        y = 0;
     const directions = [
         [1, 0],
         [0, 1],
         [-1, 0],
         [0, -1],
     ];
-    while (y !== height || x !== width) {
-        for (const direction of directions) {
-            xLoops += direction[0] == 0 ? 0 : 1;
-            yLoops += direction[1] == 0 ? 0 : 1;
-            width = direction[0] >= 0 ? matrix[0].length - xLoops : xLoops;
-            height = direction[1] >= 0 ? matrix.length - yLoops : yLoops;
-            console.log(`\nx: ${x}\ny: ${y}\nwidth: ${width}\nheight: ${height}\ndirection: ${direction}`);
-            while (y !== height && x !== width) {
-                x += direction[0];
-                y += direction[1];
-                console.log(y, x, "a");
-                console.log(height, width, "b");
-                spiral.push(matrix[y][x]);
+    while (spiral.length < matrix[0].length * matrix.length) {
+        try {
+            for (const direction of directions) {
+                if (direction[0] == -1) {
+                    xLower++;
+                } else if (direction[0] == 1) {
+                    xUpper--;
+                } else if (direction[1] == -1) {
+                    yLower++;
+                } else if (direction[1] == 1) {
+                    yUpper--;
+                }
+                console.log(
+                    `\nx: ${x}\ny: ${y}\nxLower: ${xLower}\nyLower: ${yLower}\nxUpper: ${xUpper}\nyUpper: ${yUpper}\ndirection: ${direction}`,
+                );
+                do {
+                    spiral.push(matrix[y][x]);
+                    x += direction[0];
+                    y += direction[1];
+                    console.log(x, y, "a");
+                } while (y >= yLower && y <= yUpper && x >= xLower && x <= xUpper);
+                spiral.pop();
+                x -= direction[0];
+                y -= direction[1];
             }
+        } catch (e) {
+            console.dir(spiral, { maxArrayLength: null });
+            console.log(e);
+            process.exit(11);
         }
     }
     return spiral;
