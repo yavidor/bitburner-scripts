@@ -3,7 +3,7 @@ function spiralize(matrix) {
     let xUpper = matrix[0].length,
         yUpper = matrix.length,
         xLower = -1,
-        yLower = -1,
+        yLower = 0,
         x = 0,
         y = 0;
     const directions = [
@@ -27,12 +27,12 @@ function spiralize(matrix) {
                 console.log(
                     `\nx: ${x}\ny: ${y}\nxLower: ${xLower}\nyLower: ${yLower}\nxUpper: ${xUpper}\nyUpper: ${yUpper}\ndirection: ${direction}`,
                 );
-                do {
+                while (y >= yLower && y <= yUpper && x >= xLower && x <= xUpper) {
                     spiral.push(matrix[y][x]);
                     x += direction[0];
                     y += direction[1];
                     console.log(x, y, "a");
-                } while (y >= yLower && y <= yUpper && x >= xLower && x <= xUpper);
+                }
                 spiral.pop();
                 x -= direction[0];
                 y -= direction[1];
@@ -60,11 +60,18 @@ export async function main() {
     //     [34, 27, 34, 1, 7, 17, 6, 44, 43, 11, 18, 50, 21],
     //     [42, 50, 14, 2, 30, 1, 49, 44, 32, 32, 4, 30, 41],
     // ];
+    // const matrix = [
+    //     [1, 2, 3],
+    //     [4, 5, 6],
+    //     [7, 8, 9],
+    // ];
     const matrix = [
-        [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9],
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 16],
     ];
+    // console.log(spiralize(matrix).filter((x) => x !== undefined));
     console.log(spiralize(matrix));
 }
 main();
