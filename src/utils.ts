@@ -42,7 +42,6 @@ function getAccessToServer(ns: NS, target: string): boolean {
         { executable: "SQLInject.exe", func: ns.sqlinject },
     ];
     const availableScripts = portScripts.filter((script) => ns.fileExists(script.executable));
-    // ns.tprint(`target: ${target}\nhasRoot: ${ns.hasRootAccess(target)}\nports: ${ns.getServerNumPortsRequired(target)}`)
     if (ns.getServerNumPortsRequired(target) > availableScripts.length) {
         return false;
     }

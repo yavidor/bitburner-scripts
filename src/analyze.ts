@@ -1,4 +1,5 @@
 import type { NS } from "@ns";
+import { getRouteToHost } from "./utils";
 export async function main(ns: NS) {
     const args = ns.flags([["help", false]]);
     const server = ns.args[0] as string;
@@ -31,5 +32,6 @@ ${server}:
     hack 25%   : ${(0.25 / ns.hackAnalyze(server)).toFixed(2)} threads
     hack 50%   : ${(0.5 / ns.hackAnalyze(server)).toFixed(2)} threads
     hackChance : ${(ns.hackAnalyzeChance(server) * 100).toFixed(2)}%
+    route      : ${getRouteToHost(ns, "home", server)}
 `);
 }
