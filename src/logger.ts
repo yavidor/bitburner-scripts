@@ -1,11 +1,11 @@
 import { NS } from "@ns";
 
 type ILogger = {
-    debug: (message: string) => void;
-    log: (message: string) => void;
-    warn: (message: string) => void;
-    error: (message: string) => void;
-    fatal: (message: string) => void;
+    debug: (_: string) => void;
+    log: (_: string) => void;
+    warn: (_: string) => void;
+    error: (_: string) => void;
+    fatal: (_: string) => void;
 };
 
 export default class logger implements ILogger {

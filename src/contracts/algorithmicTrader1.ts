@@ -1,7 +1,7 @@
 import { NS } from "@ns";
 
 function calculateMaxProfit(prices: number[]): number {
-    return 0;
+    return Math.min(...prices);
 }
 
 export async function main(ns: NS) {

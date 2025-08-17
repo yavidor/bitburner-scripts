@@ -1,5 +1,5 @@
 import type { NS } from "@ns";
-type accessScript = { executable: string; func: (host: string) => boolean };
+type accessScript = { executable: string; func: (_: string) => boolean };
 export function getHosts(ns: NS): string[] {
     const hosts: Set<string> = new Set();
     const queue = ["home"];
